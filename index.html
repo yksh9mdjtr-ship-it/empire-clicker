@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empire Clicker</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  padding: 20px 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 38px;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-top: 8px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+}
+
+.value {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+.label {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.main-card {
+  text-align: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.coin {
+  font-size: 80px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.08s;
+  display: inline-block;
+}
+
+.coin:active {
+  transform: scale(0.88);
+}
+
+.click-info {
+  color: #cbd5e1;
+  margin: 10px 0 18px;
+}
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  margin-top: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #f59e0b;
+  color: #111827;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.shop-title {
+  margin: 25px 0 10px;
+}
+
+.shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 16px;
+  margin: 10px 0;
+}
+
+.shop-info {
+  flex: 1;
+}
+
+.shop-name {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.shop-description {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.shop-item button {
+  width: 130px;
+  margin: 0;
+  padding: 11px;
+  font-size: 14px;
+}
+
+.progress {
+  height: 12px;
+  background: #334155;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #22c55e;
+  transition: width 0.3s;
+}
+
+.footer {
+  text-align: center;
+  color: #64748b;
+  font-size: 12px;
+  padding: 25px 0;
+}
+
+.reset {
+  background: #475569;
+  color: white;
+}
+
+@media (max-width: 450px) {
+  h1 {
+    font-size: 31px;
+  }
+
+  .coin {
+    font-size: 70px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <h1>👑 Empire Clicker</h1>
+  <div class="subtitle">Побудуй свою імперію</div>
+</header>
+
+<div class="stats">
+
+  <div class="card">
+    <div class="label">💰 Монети</div>
+    <div class="value" id="coins">0</div>
+  </div>
+
+  <div class="card">
+    <div class="label">🏰 Рівень</div>
+    <div class="value" id="level">1</div>
+  </div>
+
+  <div class="card">
+    <div class="label">⚡ За клік</div>
+    <div class="value" id="perClick">1</div>
+  </div>
+
+  <div class="card">
+    <div class="label">💵 За секунду</div>
+    <div class="value" id="perSecond">0</div>
+  </div>
+
+</div>
+
+<div class="main-card">
+
+  <div class="coin" id="coin">🪙</div>
+
+  <div class="click-info">
+    Натискай на монету, щоб заробляти
+  </div>
+
+  <div class="label">
+    Прогрес до наступного рівня
+  </div>
+
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+</div>
+
+<h2 class="shop-title">🏗️ Розвиток імперії</h2>
+
+<div class="shop-item">
+
+  <div class="shop-info">
+    <div class="shop-name">⚒️ Робітник</div>
+    <div class="shop-description">
+      +1 монета кожну секунду
+    </div>
+    <div class="shop-description">
+      Кількість: <span id="workers">0</span>
+    </div>
+  </div>
+
+  <button id="workerBtn">
+    Купити<br>
+    <span id="workerCost">25</span> 🪙
+  </button>
+
+</div>
+
+<div class="shop-item">
+
+  <div class="shop-info">
+    <div class="shop-name">🏭 Фабрика</div>
+    <div class="shop-description">
+      +10 монет кожну секунду
+    </div>
+    <div class="shop-description">
+      Кількість: <span id="factories">0</span>
+    </div>
+  </div>
+
+  <button id="factoryBtn">
+    Купити<br>
+    <span id="factoryCost">250</span> 🪙
+  </button>
+
+</div>
+
+<div class="shop-item">
+
+  <div class="shop-info">
+    <div class="shop-name">🏦 Банк</div>
+    <div class="shop-description">
+      +100 монет кожну секунду
+    </div>
+    <div class="shop-description">
+      Кількість: <span id="banks">0</span>
+    </div>
+  </div>
+
+  <button id="bankBtn">
+    Купити<br>
+    <span id="bankCost">2500</span> 🪙
+  </button>
+
+</div>
+
+<div class="shop-item">
+
+  <div class="shop-info">
+    <div class="shop-name">👑 Імператор</div>
+    <div class="shop-description">
+      +5 монет за кожен клік
+    </div>
+    <div class="shop-description">
+      Рівень: <span id="emperor">0</span>
+    </div>
+  </div>
+
+  <button id="emperorBtn">
+    Купити<br>
+    <span id="emperorCost">500</span> 🪙
+  </button>
+
+</div>
+
+<button class="reset" id="resetBtn">
+  🔄 Почати спочатку
+</button>
+
+<div class="footer">
+  Empire Clicker • v1.0
+</div>
+
+</div>
+
+<script>
+
+let game = {
+  coins: 0,
+  workers: 0,
+  factories: 0,
+  banks: 0,
+  emperor: 0
+};
+
+const baseCosts = {
+  worker: 25,
+  factory: 250,
+  bank: 2500,
+  emperor: 500
+};
+
+function loadGame() {
+  const saved = localStorage.getItem("empireClicker");
+
+  if (saved) {
+    try {
+      game = JSON.parse(saved);
+    } catch {
+      console.log("Save error");
+    }
+  }
+}
+
+function saveGame() {
+  localStorage.setItem(
+    "empireClicker",
+    JSON.stringify(game)
+  );
+}
+
+function workerCost() {
+  return Math.floor(
+    baseCosts.worker * Math.pow(1.18, game.workers)
+  );
+}
+
+function factoryCost() {
+  return Math.floor(
+    baseCosts.factory * Math.pow(1.25, game.factories)
+  );
+}
+
+function bankCost() {
+  return Math.floor(
+    baseCosts.bank * Math.pow(1.3, game.banks)
+  );
+}
+
+function emperorCost() {
+  return Math.floor(
+    baseCosts.emperor * Math.pow(1.35, game.emperor)
+  );
+}
+
+function perClick() {
+  return 1 + game.emperor * 5;
+}
+
+function perSecond() {
+  return (
+    game.workers * 1 +
+    game.factories * 10 +
+    game.banks * 100
+  );
+}
+
+function level() {
+  return Math.floor(Math.sqrt(game.coins / 100)) + 1;
+}
+
+function update() {
+
+  document.getElementById("coins").textContent =
+    Math.floor(game.coins).toLocaleString();
+
+  document.getElementById("level").textContent =
+    level();
+
+  document.getElementById("perClick").textContent =
+    perClick();
+
+  document.getElementById("perSecond").textContent =
+    perSecond();
+
+  document.getElementById("workers").textContent =
+    game.workers;
+
+  document.getElementById("factories").textContent =
+    game.factories;
+
+  document.getElementById("banks").textContent =
+    game.banks;
+
+  document.getElementById("emperor").textContent =
+    game.emperor;
+
+  document.getElementById("workerCost").textContent =
+    workerCost().toLocaleString();
+
+  document.getElementById("factoryCost").textContent =
+    factoryCost().toLocaleString();
+
+  document.getElementById("bankCost").textContent =
+    bankCost().toLocaleString();
+
+  document.getElementById("emperorCost").textContent =
+    emperorCost().toLocaleString();
+
+  document.getElementById("workerBtn").disabled =
+    game.coins < workerCost();
+
+  document.getElementById("factoryBtn").disabled =
+    game.coins < factoryCost();
+
+  document.getElementById("bankBtn").disabled =
+    game.coins < bankCost();
+
+  document.getElementById("emperorBtn").disabled =
+    game.coins < emperorCost();
+
+  let currentLevel = level();
+
+  let currentXP =
+    game.coins - Math.pow(currentLevel - 1, 2) * 100;
+
+  let nextXP =
+    Math.pow(currentLevel, 2) * 100 -
+    Math.pow(currentLevel - 1, 2) * 100;
+
+  let percent =
+    Math.max(
+      0,
+      Math.min(100, (currentXP / nextXP) * 100)
+    );
+
+  document.getElementById("progressBar").style.width =
+    percent + "%";
+}
+
+document.getElementById("coin").addEventListener(
+  "click",
+  function() {
+
+    game.coins += perClick();
+
+    update();
+    saveGame();
+
+  }
+);
+
+document.getElementById("workerBtn").addEventListener(
+  "click",
+  function() {
+
+    const cost = workerCost();
+
+    if (game.coins >= cost) {
+
+      game.coins -= cost;
+      game.workers++;
+
+      update();
+      saveGame();
+
+    }
+
+  }
+);
+
+document.getElementById("factoryBtn").addEventListener(
+  "click",
+  function() {
+
+    const cost = factoryCost();
+
+    if (game.coins >= cost) {
+
+      game.coins -= cost;
+      game.factories++;
+
+      update();
+      saveGame();
+
+    }
+
+  }
+);
+
+document.getElementById("bankBtn").addEventListener(
+  "click",
+  function() {
+
+    const cost = bankCost();
+
+    if (game.coins >= cost) {
+
+      game.coins -= cost;
+      game.banks++;
+
+      update();
+      saveGame();
+
+    }
+
+  }
+);
+
+document.getElementById("emperorBtn").addEventListener(
+  "click",
+  function() {
+
+    const cost = emperorCost();
+
+    if (game.coins >= cost) {
+
+      game.coins -= cost;
+      game.emperor++;
+
+      update();
+      saveGame();
+
+    }
+
+  }
+);
+
+document.getElementById("resetBtn").addEventListener(
+  "click",
+  function() {
+
+    const confirmed =
+      confirm("Точно почати імперію спочатку?");
+
+    if (confirmed) {
+
+      game = {
+        coins: 0,
+        workers: 0,
+        factories: 0,
+        banks: 0,
+        emperor: 0
+      };
+
+      saveGame();
+      update();
+
+    }
+
+  }
+);
+
+setInterval(function() {
+
+  const income = perSecond();
+
+  if (income > 0) {
+
+    game.coins += income;
+
+    update();
+    saveGame();
+
+  }
+
+}, 1000);
+
+loadGame();
+update();
+
+</script>
+
+</body>
+</html>
