@@ -1,609 +1,144 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Empire Clicker</title>
-
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-}
-
-header {
-  text-align: center;
-  padding: 20px 0;
-}
-
-h1 {
-  margin: 0;
-  font-size: 38px;
-}
-
-.subtitle {
-  color: #94a3b8;
-  margin-top: 8px;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.card {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 18px;
-  padding: 18px;
-  text-align: center;
-}
-
-.value {
-  font-size: 28px;
-  font-weight: bold;
-  margin-top: 6px;
-}
-
-.label {
-  color: #94a3b8;
-  font-size: 14px;
-}
-
-.main-card {
-  text-align: center;
-  background: rgba(255,255,255,0.08);
-  border-radius: 24px;
-  padding: 25px;
-  margin-bottom: 20px;
-}
-
-.coin {
-  font-size: 80px;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.08s;
-  display: inline-block;
-}
-
-.coin:active {
-  transform: scale(0.88);
-}
-
-.click-info {
-  color: #cbd5e1;
-  margin: 10px 0 18px;
-}
-
-button {
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  padding: 15px;
-  margin-top: 10px;
-  font-size: 17px;
-  font-weight: bold;
-  cursor: pointer;
-  background: #f59e0b;
-  color: #111827;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.shop-title {
-  margin: 25px 0 10px;
-}
-
-.shop-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 18px;
-  padding: 16px;
-  margin: 10px 0;
-}
-
-.shop-info {
-  flex: 1;
-}
-
-.shop-name {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.shop-description {
-  color: #94a3b8;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.shop-item button {
-  width: 130px;
-  margin: 0;
-  padding: 11px;
-  font-size: 14px;
-}
-
-.progress {
-  height: 12px;
-  background: #334155;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 12px;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #22c55e;
-  transition: width 0.3s;
-}
-
-.footer {
-  text-align: center;
-  color: #64748b;
-  font-size: 12px;
-  padding: 25px 0;
-}
-
-.reset {
-  background: #475569;
-  color: white;
-}
-
-@media (max-width: 450px) {
-  h1 {
-    font-size: 31px;
-  }
-
-  .coin {
-    font-size: 70px;
-  }
-}
+*{box-sizing:border-box}
+:root{--bg:#0b1020;--card:#141b31;--card2:#1b2440;--text:#f7f8ff;--muted:#9ba7c7;--accent:#7c5cff;--accent2:#29d3a2;--danger:#ff6685}
+body{margin:0;background:radial-gradient(circle at top,#1b2550 0,#0b1020 55%);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+.app{max-width:760px;margin:auto;padding:18px 14px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{font-weight:900;font-size:24px}.logo span{color:var(--accent)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:rgba(20,27,49,.88);border:1px solid #2b3658;border-radius:18px;padding:14px;box-shadow:0 12px 35px #0003}
+.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.value{font-size:25px;font-weight:900;margin-top:3px}
+.main{margin-top:12px;text-align:center;padding:22px}
+.rank{color:#b9c4e7;font-size:14px}
+h1{margin:4px 0 4px;font-size:30px}
+#income{color:var(--accent2);font-weight:800}
+.coin{width:190px;height:190px;border-radius:50%;margin:24px auto 18px;background:linear-gradient(145deg,#8d70ff,#5d3fe8);box-shadow:0 20px 45px #5d3fe855, inset 0 2px 10px #ffffff55;display:flex;align-items:center;justify-content:center;font-size:78px;user-select:none;transition:.08s}
+.coin:active{transform:scale(.94)}
+.progress{height:10px;background:#293352;border-radius:20px;overflow:hidden;margin:10px 0 2px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0}
+.tabs{display:flex;gap:8px;margin:12px 0}
+.tab{flex:1;padding:12px;border-radius:12px;background:#1b2440;color:#aeb8d6}
+.tab.active{background:var(--accent);color:#fff;font-weight:800}
+.panel{display:none}.panel.active{display:block}
+.upgrade{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:9px 0;padding:14px;border-radius:14px;background:#171f38;border:1px solid #293554}
+.upgrade h3{margin:0 0 4px;font-size:16px}.upgrade p{margin:0;color:var(--muted);font-size:12px}
+.buy{background:var(--accent);padding:10px 13px;border-radius:10px;font-weight:800;white-space:nowrap}.buy:disabled{opacity:.35;cursor:not-allowed}
+.achievement{padding:12px;border-radius:12px;background:#171f38;margin:8px 0;display:flex;justify-content:space-between}
+.done{color:var(--accent2);font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.action{padding:12px;border-radius:12px;background:#252f4d}
+.small{font-size:12px;color:var(--muted);line-height:1.5}
+.footer{text-align:center;color:#7180a5;font-size:11px;margin-top:18px}
+@media(max-width:430px){.coin{width:165px;height:165px;font-size:66px}.value{font-size:22px}}
 </style>
 </head>
-
 <body>
-
-<div class="container">
-
-<header>
-  <h1>👑 Empire Clicker</h1>
-  <div class="subtitle">Побудуй свою імперію</div>
-</header>
-
-<div class="stats">
-
-  <div class="card">
-    <div class="label">💰 Монети</div>
-    <div class="value" id="coins">0</div>
+<div class="app">
+  <div class="top">
+    <div class="logo">Empire <span>Clicker</span></div>
+    <button class="action" onclick="resetGame()">↻ Reset</button>
   </div>
 
-  <div class="card">
-    <div class="label">🏰 Рівень</div>
-    <div class="value" id="level">1</div>
+  <div class="stats">
+    <div class="card"><div class="label">Монети</div><div class="value" id="coins">0</div></div>
+    <div class="card"><div class="label">За клік</div><div class="value" id="perClick">1</div></div>
+    <div class="card"><div class="label">За секунду</div><div class="value" id="perSec">0</div></div>
+    <div class="card"><div class="label">Рівень</div><div class="value" id="level">1</div></div>
   </div>
 
-  <div class="card">
-    <div class="label">⚡ За клік</div>
-    <div class="value" id="perClick">1</div>
+  <section class="card main">
+    <div class="rank" id="rank">Новачок</div>
+    <h1>Будуй свою імперію</h1>
+    <div id="income">Клікай, купуй, розвивайся</div>
+    <div class="coin" id="coin" onclick="clickCoin()">💰</div>
+    <div class="small">Наступний рівень</div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="small"><span id="xp">0</span> / <span id="next">100</span> XP</div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" onclick="tab('shop',this)">Магазин</button>
+    <button class="tab" onclick="tab('empire',this)">Імперія</button>
+    <button class="tab" onclick="tab('ach',this)">Досягнення</button>
   </div>
 
-  <div class="card">
-    <div class="label">💵 За секунду</div>
-    <div class="value" id="perSecond">0</div>
-  </div>
+  <section id="shop" class="panel active card">
+    <div class="upgrade"><div><h3>⚔️ Залізна кирка</h3><p>+1 монета за клік · рівень <b id="u1">0</b></p></div><button class="buy" id="b1" onclick="buy(1)">50</button></div>
+    <div class="upgrade"><div><h3>🏪 Малий магазин</h3><p>+2 монети/сек · рівень <b id="u2">0</b></p></div><button class="buy" id="b2" onclick="buy(2)">100</button></div>
+    <div class="upgrade"><div><h3>🏭 Фабрика</h3><p>+10 монет/сек · рівень <b id="u3">0</b></p></div><button class="buy" id="b3" onclick="buy(3)">750</button></div>
+    <div class="upgrade"><div><h3>🏙️ Мегаполіс</h3><p>+50 монет/сек · рівень <b id="u4">0</b></p></div><button class="buy" id="b4" onclick="buy(4)">5000</button></div>
+  </section>
 
-</div>
+  <section id="empire" class="panel card">
+    <h3 style="margin-top:0">📈 Твоя імперія</h3>
+    <p class="small">Розвивайся до нових рангів. Прогрес автоматично зберігається на цьому пристрої.</p>
+    <div class="achievement"><span>Загалом зароблено</span><b id="total">0</b></div>
+    <div class="achievement"><span>Всього кліків</span><b id="clicks">0</b></div>
+    <div class="achievement"><span>Найвищий рівень</span><b id="level2">1</b></div>
+    <div class="actions"><button class="action" onclick="saveGame()">💾 Зберегти</button><button class="action" onclick="exportSave()">📤 Експорт</button></div>
+  </section>
 
-<div class="main-card">
+  <section id="ach" class="panel card">
+    <h3 style="margin-top:0">🏆 Досягнення</h3>
+    <div class="achievement"><span>Перші 100 монет</span><span id="a1">—</span></div>
+    <div class="achievement"><span>100 кліків</span><span id="a2">—</span></div>
+    <div class="achievement"><span>1 000 монет</span><span id="a3">—</span></div>
+    <div class="achievement"><span>Рівень 10</span><span id="a4">—</span></div>
+  </section>
 
-  <div class="coin" id="coin">🪙</div>
-
-  <div class="click-info">
-    Натискай на монету, щоб заробляти
-  </div>
-
-  <div class="label">
-    Прогрес до наступного рівня
-  </div>
-
-  <div class="progress">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-
-</div>
-
-<h2 class="shop-title">🏗️ Розвиток імперії</h2>
-
-<div class="shop-item">
-
-  <div class="shop-info">
-    <div class="shop-name">⚒️ Робітник</div>
-    <div class="shop-description">
-      +1 монета кожну секунду
-    </div>
-    <div class="shop-description">
-      Кількість: <span id="workers">0</span>
-    </div>
-  </div>
-
-  <button id="workerBtn">
-    Купити<br>
-    <span id="workerCost">25</span> 🪙
-  </button>
-
-</div>
-
-<div class="shop-item">
-
-  <div class="shop-info">
-    <div class="shop-name">🏭 Фабрика</div>
-    <div class="shop-description">
-      +10 монет кожну секунду
-    </div>
-    <div class="shop-description">
-      Кількість: <span id="factories">0</span>
-    </div>
-  </div>
-
-  <button id="factoryBtn">
-    Купити<br>
-    <span id="factoryCost">250</span> 🪙
-  </button>
-
-</div>
-
-<div class="shop-item">
-
-  <div class="shop-info">
-    <div class="shop-name">🏦 Банк</div>
-    <div class="shop-description">
-      +100 монет кожну секунду
-    </div>
-    <div class="shop-description">
-      Кількість: <span id="banks">0</span>
-    </div>
-  </div>
-
-  <button id="bankBtn">
-    Купити<br>
-    <span id="bankCost">2500</span> 🪙
-  </button>
-
-</div>
-
-<div class="shop-item">
-
-  <div class="shop-info">
-    <div class="shop-name">👑 Імператор</div>
-    <div class="shop-description">
-      +5 монет за кожен клік
-    </div>
-    <div class="shop-description">
-      Рівень: <span id="emperor">0</span>
-    </div>
-  </div>
-
-  <button id="emperorBtn">
-    Купити<br>
-    <span id="emperorCost">500</span> 🪙
-  </button>
-
-</div>
-
-<button class="reset" id="resetBtn">
-  🔄 Почати спочатку
-</button>
-
-<div class="footer">
-  Empire Clicker • v1.0
-</div>
-
+  <div class="footer">Empire Clicker · v2 · Гра зберігається автоматично</div>
 </div>
 
 <script>
+const defaults={coins:0,total:0,clicks:0,xp:0,level:1,up:[0,0,0,0]};
+let s=JSON.parse(localStorage.getItem('empireClickerV2')||'null')||defaults;
+const prices=[0,50,100,750,5000];
+const addsClick=[0,1,0,0,0], addsSec=[0,0,2,10,50];
 
-let game = {
-  coins: 0,
-  workers: 0,
-  factories: 0,
-  banks: 0,
-  emperor: 0
-};
+function fmt(n){if(n<1000)return Math.floor(n).toString();const u=['K','M','B','T'];let i=-1;while(n>=1000&&i<u.length-1){n/=1000;i++}return n.toFixed(n<10?1:0)+u[i]}
+function calcClick(){return 1+s.up[1]}
+function calcSec(){return s.up[2]*2+s.up[3]*10+s.up[4]*50}
+function nextXp(){return Math.floor(100*Math.pow(1.35,s.level-1))}
+function rank(){return ['Новачок','Підприємець','Капітан','Барон','Магнат','Імператор'][Math.min(5,Math.floor((s.level-1)/5))]}
 
-const baseCosts = {
-  worker: 25,
-  factory: 250,
-  bank: 2500,
-  emperor: 500
-};
-
-function loadGame() {
-  const saved = localStorage.getItem("empireClicker");
-
-  if (saved) {
-    try {
-      game = JSON.parse(saved);
-    } catch {
-      console.log("Save error");
-    }
-  }
+function render(){
+ document.getElementById('coins').textContent=fmt(s.coins);
+ document.getElementById('perClick').textContent=fmt(calcClick());
+ document.getElementById('perSec').textContent=fmt(calcSec());
+ document.getElementById('level').textContent=s.level;
+ document.getElementById('level2').textContent=s.level;
+ document.getElementById('rank').textContent=rank();
+ document.getElementById('total').textContent=fmt(s.total);
+ document.getElementById('clicks').textContent=fmt(s.clicks);
+ document.getElementById('xp').textContent=fmt(s.xp);
+ document.getElementById('next').textContent=fmt(nextXp());
+ document.getElementById('bar').style.width=Math.min(100,s.xp/nextXp()*100)+'%';
+ for(let i=1;i<=4;i++){document.getElementById('u'+i).textContent=s.up[i];let cost=Math.floor(prices[i]*Math.pow(1.18,s.up[i]));let b=document.getElementById('b'+i);b.textContent=fmt(cost);b.disabled=s.coins<cost}
+ const ach=[[s.total>=100,'a1'],[s.clicks>=100,'a2'],[s.total>=1000,'a3'],[s.level>=10,'a4']];
+ ach.forEach(([ok,id])=>{document.getElementById(id).textContent=ok?'✓ Виконано':'—';document.getElementById(id).className=ok?'done':''});
+ localStorage.setItem('empireClickerV2',JSON.stringify(s));
 }
-
-function saveGame() {
-  localStorage.setItem(
-    "empireClicker",
-    JSON.stringify(game)
-  );
+function add(amount){
+ s.coins+=amount;s.total+=amount;s.xp+=Math.max(1,Math.floor(amount)); 
+ while(s.xp>=nextXp()){s.xp-=nextXp();s.level++}
+ render();
 }
-
-function workerCost() {
-  return Math.floor(
-    baseCosts.worker * Math.pow(1.18, game.workers)
-  );
-}
-
-function factoryCost() {
-  return Math.floor(
-    baseCosts.factory * Math.pow(1.25, game.factories)
-  );
-}
-
-function bankCost() {
-  return Math.floor(
-    baseCosts.bank * Math.pow(1.3, game.banks)
-  );
-}
-
-function emperorCost() {
-  return Math.floor(
-    baseCosts.emperor * Math.pow(1.35, game.emperor)
-  );
-}
-
-function perClick() {
-  return 1 + game.emperor * 5;
-}
-
-function perSecond() {
-  return (
-    game.workers * 1 +
-    game.factories * 10 +
-    game.banks * 100
-  );
-}
-
-function level() {
-  return Math.floor(Math.sqrt(game.coins / 100)) + 1;
-}
-
-function update() {
-
-  document.getElementById("coins").textContent =
-    Math.floor(game.coins).toLocaleString();
-
-  document.getElementById("level").textContent =
-    level();
-
-  document.getElementById("perClick").textContent =
-    perClick();
-
-  document.getElementById("perSecond").textContent =
-    perSecond();
-
-  document.getElementById("workers").textContent =
-    game.workers;
-
-  document.getElementById("factories").textContent =
-    game.factories;
-
-  document.getElementById("banks").textContent =
-    game.banks;
-
-  document.getElementById("emperor").textContent =
-    game.emperor;
-
-  document.getElementById("workerCost").textContent =
-    workerCost().toLocaleString();
-
-  document.getElementById("factoryCost").textContent =
-    factoryCost().toLocaleString();
-
-  document.getElementById("bankCost").textContent =
-    bankCost().toLocaleString();
-
-  document.getElementById("emperorCost").textContent =
-    emperorCost().toLocaleString();
-
-  document.getElementById("workerBtn").disabled =
-    game.coins < workerCost();
-
-  document.getElementById("factoryBtn").disabled =
-    game.coins < factoryCost();
-
-  document.getElementById("bankBtn").disabled =
-    game.coins < bankCost();
-
-  document.getElementById("emperorBtn").disabled =
-    game.coins < emperorCost();
-
-  let currentLevel = level();
-
-  let currentXP =
-    game.coins - Math.pow(currentLevel - 1, 2) * 100;
-
-  let nextXP =
-    Math.pow(currentLevel, 2) * 100 -
-    Math.pow(currentLevel - 1, 2) * 100;
-
-  let percent =
-    Math.max(
-      0,
-      Math.min(100, (currentXP / nextXP) * 100)
-    );
-
-  document.getElementById("progressBar").style.width =
-    percent + "%";
-}
-
-document.getElementById("coin").addEventListener(
-  "click",
-  function() {
-
-    game.coins += perClick();
-
-    update();
-    saveGame();
-
-  }
-);
-
-document.getElementById("workerBtn").addEventListener(
-  "click",
-  function() {
-
-    const cost = workerCost();
-
-    if (game.coins >= cost) {
-
-      game.coins -= cost;
-      game.workers++;
-
-      update();
-      saveGame();
-
-    }
-
-  }
-);
-
-document.getElementById("factoryBtn").addEventListener(
-  "click",
-  function() {
-
-    const cost = factoryCost();
-
-    if (game.coins >= cost) {
-
-      game.coins -= cost;
-      game.factories++;
-
-      update();
-      saveGame();
-
-    }
-
-  }
-);
-
-document.getElementById("bankBtn").addEventListener(
-  "click",
-  function() {
-
-    const cost = bankCost();
-
-    if (game.coins >= cost) {
-
-      game.coins -= cost;
-      game.banks++;
-
-      update();
-      saveGame();
-
-    }
-
-  }
-);
-
-document.getElementById("emperorBtn").addEventListener(
-  "click",
-  function() {
-
-    const cost = emperorCost();
-
-    if (game.coins >= cost) {
-
-      game.coins -= cost;
-      game.emperor++;
-
-      update();
-      saveGame();
-
-    }
-
-  }
-);
-
-document.getElementById("resetBtn").addEventListener(
-  "click",
-  function() {
-
-    const confirmed =
-      confirm("Точно почати імперію спочатку?");
-
-    if (confirmed) {
-
-      game = {
-        coins: 0,
-        workers: 0,
-        factories: 0,
-        banks: 0,
-        emperor: 0
-      };
-
-      saveGame();
-      update();
-
-    }
-
-  }
-);
-
-setInterval(function() {
-
-  const income = perSecond();
-
-  if (income > 0) {
-
-    game.coins += income;
-
-    update();
-    saveGame();
-
-  }
-
-}, 1000);
-
-loadGame();
-update();
-
+function clickCoin(){s.clicks++;add(calcClick());}
+function buy(i){let cost=Math.floor(prices[i]*Math.pow(1.18,s.up[i]));if(s.coins>=cost){s.coins-=cost;s.up[i]++;render()}}
+function tab(id,btn){document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
+function saveGame(){localStorage.setItem('empireClickerV2',JSON.stringify(s));alert('Збережено ✓')}
+function exportSave(){navigator.clipboard?.writeText(btoa(JSON.stringify(s)));alert('Код збереження скопійовано')}
+function resetGame(){if(confirm('Скинути весь прогрес?')){s=JSON.parse(JSON.stringify(defaults));render()}}
+setInterval(()=>{let x=calcSec();if(x>0)add(x/2)},500);
+render();
 </script>
-
 </body>
 </html>
