@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Empire Clicker</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(145deg,#08111f,#17264a);color:#fff;min-height:100vh}
+main{max-width:900px;margin:auto;padding:18px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+h1{font-size:28px;margin:0}
+.card{background:rgba(20,31,57,.92);border:1px solid #34466e;border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#0d1830;border-radius:15px;padding:12px;text-align:center}
+.muted{color:#9eacc9;font-size:13px}.value{font-size:21px;font-weight:800;margin-top:4px}
+.money{text-align:center;font-size:46px;font-weight:900;margin:18px 0}
+button{border:0;border-radius:14px;padding:13px 16px;font-size:16px;font-weight:800;cursor:pointer}
+button:active{transform:scale(.98)}
+.work{width:100%;font-size:22px;background:#ffd34e;color:#111;padding:18px}
+.secondary{background:#293b64;color:#fff}
+.danger{background:#642b3b;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.shop button{width:100%;background:#ffd34e;color:#111}
+.progress{height:11px;background:#293958;border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;width:0;background:#55e6a5}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.badge{display:inline-block;background:#20385d;border-radius:999px;padding:6px 10px;margin:3px;font-size:13px}
+.notice{background:#142e2b;border-color:#286c58}
+@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.money{font-size:38px}main{padding:12px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>🏙️ Empire Clicker</h1>
+<button class="danger" onclick="resetGame()">Скинути</button>
+</header>
+
+<section class="card">
+<div class="muted">Капітал імперії</div>
+<div class="money">💰 <span id="money">0</span></div>
+<div class="stats">
+<div class="stat"><div class="muted">Дохід/сек</div><div class="value" id="income">0</div></div>
+<div class="stat"><div class="muted">Рівень</div><div class="value" id="level">1</div></div>
+<div class="stat"><div class="muted">Множник</div><div class="value" id="mult">x1.00</div></div>
+</div>
+<div class="progress"><i id="xpbar"></i></div>
+<div class="muted" id="xptext">0 / 100 XP</div>
+<br>
+<button class="work" onclick="work()">💼 ПРАЦЮВАТИ +<span id="click">1</span> 💰</button>
+</section>
+
+<section class="card">
+<div class="row"><h2>🎁 Щоденна нагорода</h2><span class="badge" id="dailyStatus">Готово</span></div>
+<p class="muted">Забирай бонус раз на 24 години.</p>
+<button class="secondary" id="dailyBtn" onclick="dailyReward()">Забрати +500 💰</button>
+</section>
+
+<section class="grid shop">
+<div class="card"><h2>☕ Кав'ярня</h2><p class="muted">+1 💰/сек</p><button onclick="buy('cafe')">Купити за <span id="cafeCost">25</span></button><p>Є: <b id="cafe">0</b></p></div>
+<div class="card"><h2>🏪 Магазин</h2><p class="muted">+8 💰/сек</p><button onclick="buy('shop')">Купити за <span id="shopCost">150</span></button><p>Є: <b id="shop">0</b></p></div>
+<div class="card"><h2>🏭 Фабрика</h2><p class="muted">+60 💰/сек</p><button onclick="buy('factory')">Купити за <span id="factoryCost">1200</span></button><p>Є: <b id="factory">0</b></p></div>
+<div class="card"><h2>🌆 Нове місто</h2><p class="muted">+500 💰/сек</p><button onclick="buy('city')">Купити за <span id="cityCost">10000</span></button><p>Є: <b id="city">0</b></p></div>
+</section>
+
+<section class="card">
+<div class="row"><h2>🏆 Досягнення</h2><span class="badge" id="achCount">0/5</span></div>
+<div id="achievements"></div>
+</section>
+
+<section class="card">
+<h2>🚀 Prestige</h2>
+<p class="muted">На 50 000 💰 починай нову імперію та отримуй постійний бонус до доходу.</p>
+<button class="work" onclick="prestige()">Зробити Prestige</button>
+<p>Prestige: <b id="prestige">0</b></p>
+</section>
+
+<section class="card notice">
+<h2>💡 Монетизація</h2>
+<p>Гра працює як безкоштовний прототип. Реальні покупки/підписки підключатимемо окремим етапом через Stripe Checkout, а не фальшивими кнопками.</p>
+</section>
+</main>
+
+<script>
+const KEY="empire-v2";
+const base={cafe:25,shop:150,factory:1200,city:10000};
+const inc={cafe:1,shop:8,factory:60,city:500};
+let s=JSON.parse(localStorage.getItem(KEY)||"null")||{
+ m:0,xp:0,l:1,prestige:0,cafe:0,shop:0,factory:0,city:0,lastDaily:0,lastSeen:Date.now()
+};
+const achievements=[
+ ["first","Перші гроші","Заробити 100 💰",()=>s.m>=100],
+ ["level5","Рівень 5","Досягти 5 рівня",()=>s.l>=5],
+ ["builder","Будівельник","Купити 10 будівель",()=>s.cafe+s.shop+s.factory+s.city>=10],
+ ["rich","Багатій","Накопичити 10 000 💰",()=>s.m>=10000],
+ ["prestige","Нова ера","Зробити Prestige",()=>s.prestige>=1]
+];
+function save(){s.lastSeen=Date.now();localStorage.setItem(KEY,JSON.stringify(s))}
+function income(){return (s.cafe+s.shop*8+s.factory*60+s.city*500)*(1+s.prestige*.25)}
+function cost(k){return Math.floor(base[k]*Math.pow(1.18,s[k]))}
+function work(){let n=Math.max(1,Math.floor(1+s.prestige*.25));s.m+=n;s.xp+=5;if(s.xp>=100){s.xp-=100;s.l++;}save();render()}
+function buy(k){let c=cost(k);if(s.m<c){alert("Ще не вистачає 💰");return}s.m-=c;s[k]++;save();render()}
+function dailyReward(){
+ let now=Date.now();
+ if(now-s.lastDaily<86400000){alert("Щоденний бонус ще не готовий.");return}
+ s.m+=500;s.lastDaily=now;save();render();
+}
+function prestige(){
+ if(s.m<50000){alert("Потрібно 50 000 💰");return}
+ s={m:0,xp:0,l:1,prestige:s.prestige+1,cafe:0,shop:0,factory:0,city:0,lastDaily:s.lastDaily,lastSeen:Date.now()};
+ save();render();alert("🚀 Нова імперія! Постійний бонус збільшено.");
+}
+function resetGame(){if(confirm("Точно скинути весь прогрес?")){localStorage.removeItem(KEY);location.reload()}}
+function render(){
+ document.getElementById("money").textContent=Math.floor(s.m).toLocaleString("uk-UA");
+ document.getElementById("income").textContent=Math.floor(income()).toLocaleString("uk-UA");
+ document.getElementById("level").textContent=s.l;
+ document.getElementById("mult").textContent="x"+(1+s.prestige*.25).toFixed(2);
+ document.getElementById("click").textContent=Math.max(1,Math.floor(1+s.prestige*.25));
+ document.getElementById("xpbar").style.width=s.xp+"%";
+ document.getElementById("xptext").textContent=s.xp+" / 100 XP";
+ document.getElementById("prestige").textContent=s.prestige;
+ for(const k of Object.keys(base)){
+   document.getElementById(k).textContent=s[k];
+   document.getElementById(k+"Cost").textContent=cost(k).toLocaleString("uk-UA");
+ }
+ let ready=Date.now()-s.lastDaily>=86400000;
+ document.getElementById("dailyStatus").textContent=ready?"Готово":"Через "+Math.ceil((86400000-(Date.now()-s.lastDaily))/3600000)+" год.";
+ document.getElementById("dailyBtn").disabled=!ready;
+ document.getElementById("dailyBtn").style.opacity=ready?"1":".55";
+ let done=0;
+ document.getElementById("achievements").innerHTML=achievements.map(a=>{
+   let ok=a[3]();if(ok)done++;
+   return `<span class="badge">${ok?"✅":"🔒"} ${a[1]}</span>`;
+ }).join("");
+ document.getElementById("achCount").textContent=done+"/5";
+}
+let offline=Math.min(3600,Math.floor((Date.now()-s.lastSeen)/1000));
+if(offline>10){let bonus=Math.floor(income()*offline);if(bonus>0){s.m+=bonus;setTimeout(()=>alert("💤 Поки тебе не було, імперія заробила "+bonus.toLocaleString("uk-UA")+" 💰"),300)}}
+save();render();
+setInterval(()=>{s.m+=income();save();render()},1000);
+</script>
+</body>
+</html>
